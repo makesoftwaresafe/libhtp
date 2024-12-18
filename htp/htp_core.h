@@ -43,6 +43,57 @@
 extern "C" {
 #endif
 
+/* Define SCAN_BUILD_X64_PADDING to add padding to structs for
+ * when clang scan-build is used with the optin.performance.Padding
+ * checker. */
+#if defined(__clang_analyzer__)
+/** FreeBSD does not define __WORDSIZE, but it uses __LONG_BIT */
+#ifndef __WORDSIZE
+    #ifdef __LONG_BIT
+        #define __WORDSIZE __LONG_BIT
+    #else
+        #ifdef LONG_BIT
+            #define __WORDSIZE LONG_BIT
+        #endif
+    #endif
+#endif
+
+/** Windows does not define __WORDSIZE, but it uses __X86__ */
+#ifndef __WORDSIZE
+    #if defined(__X86__) || defined(_X86_) || defined(_M_IX86)
+        #define __WORDSIZE 32
+    #else
+        #if defined(__X86_64__) || defined(_X86_64_) || \
+            defined(__x86_64)   || defined(__x86_64__) || \
+            defined(__amd64)    || defined(__amd64__)
+            #define __WORDSIZE 64
+        #endif
+    #endif
+#endif
+
+/** if not succesful yet try the data models */
+#ifndef __WORDSIZE
+    #if defined(_ILP32) || defined(__ILP32__)
+        #define __WORDSIZE 32
+    #endif
+    #if defined(_LP64) || defined(__LP64__)
+        #define __WORDSIZE 64
+    #endif
+#endif
+
+#ifndef __WORDSIZE
+    #define __WORDSIZE 64
+#endif
+
+#if __WORDSIZE==64
+#define SCAN_BUILD_X64_PADDING(x)   x
+#else
+#define SCAN_BUILD_X64_PADDING(_x)
+#endif
+#else /* else __clang_analyzer__ */
+#define SCAN_BUILD_X64_PADDING(_x)
+#endif /* end __clang_analyzer__ */
+
 typedef int htp_status_t;
 
 typedef struct htp_cfg_t htp_cfg_t;

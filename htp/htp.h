@@ -221,6 +221,8 @@ struct htp_tx_t {
      */
     int is_config_shared;
 
+    SCAN_BUILD_X64_PADDING(int pad0;)
+
     /** The user data associated with this transaction. */
     void *user_data;
     
@@ -230,6 +232,8 @@ struct htp_tx_t {
     /** Contains a count of how many empty lines were skipped before the request line. */
     unsigned int request_ignored_lines;
 
+    SCAN_BUILD_X64_PADDING(int pad1;)
+
     /** The first line of this request. */
     bstr *request_line;      
 
@@ -238,6 +242,8 @@ struct htp_tx_t {
 
     /** Request method, as number. Available only if we were able to recognize the request method. */
     enum htp_method_t request_method_number;
+
+    SCAN_BUILD_X64_PADDING(int pad2;)
 
     /**
      * Request URI, raw, as given to us on the request line. This field can take different forms,
@@ -421,6 +427,8 @@ struct htp_tx_t {
      */
     int response_protocol_number;
 
+    SCAN_BUILD_X64_PADDING(int pad3;)
+
     /**
      * Response status code, as text. Starts as NULL and can remain NULL on
      * an invalid response that does not specify status code.
@@ -444,6 +452,8 @@ struct htp_tx_t {
 
     /** Have we seen the server respond with a 100 response? */
     int seen_100continue;      
+
+    SCAN_BUILD_X64_PADDING(int pad4;)
 
     /** Parsed response headers. Contains instances of htp_header_t. */
     htp_table_t *response_headers;   
@@ -512,6 +522,8 @@ struct htp_tx_t {
      */
     enum htp_content_encoding_t response_content_encoding_processing;
     
+    SCAN_BUILD_X64_PADDING(int pad5;)
+
     /**
      * This field will contain the response content type when that information
      * is available in response headers. The contents of the field will be converted
